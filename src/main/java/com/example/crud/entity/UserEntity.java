@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import lombok.*;
-import java.util.Collections;
 import java.util.List;
 
 @Builder

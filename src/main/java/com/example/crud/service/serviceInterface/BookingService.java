@@ -2,8 +2,7 @@ package com.example.crud.service.serviceInterface;
 
 import com.example.crud.dto.request.BookingRequest;
 import com.example.crud.dto.response.ResponseApi;
-import com.example.crud.entity.CustomerEntity;
-import com.example.crud.entity.RoomEntity;
+import com.example.crud.dto.response.ResponseFilter;
 
 import java.sql.Date;
 
@@ -16,5 +15,5 @@ public interface BookingService {
 
     ResponseApi deleteBooking(Long id);
 
-    ResponseApi filterBooking(Date start , Date end, Long id_customer, Long id_room , String arrange, int page , int size);
+    ResponseFilter filterBooking(Date start , Date end, Long id_customer, Long id_room , String arrange, int page , int size);
 }

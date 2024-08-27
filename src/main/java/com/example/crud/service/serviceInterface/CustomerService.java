@@ -2,6 +2,7 @@ package com.example.crud.service.serviceInterface;
 
 import com.example.crud.dto.request.CustomerRequest;
 import com.example.crud.dto.response.ResponseApi;
+import com.example.crud.dto.response.ResponseFilter;
 
 public interface CustomerService {
     ResponseApi getCustomer();
@@ -12,6 +13,6 @@ public interface CustomerService {
 
     ResponseApi deleteCustomer(Long id);
 
-    ResponseApi filterCustomer(String name, String address, String phone,String cccd, String sortType, int page, int size);
+    ResponseFilter filterCustomer(String name, String address, String phone, String cccd, int page, int size, String sortType);
 
 }

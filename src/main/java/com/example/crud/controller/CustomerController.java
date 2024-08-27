@@ -2,7 +2,6 @@ package com.example.crud.controller;
 
 import com.example.crud.dto.request.CustomerRequest;
 import com.example.crud.service.serviceInterface.CustomerService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,19 +37,18 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.deleteCustomer(id), HttpStatus.OK);
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     public ResponseEntity<?> filterCustomer(
 
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "") String phone,
             @RequestParam(defaultValue = "") String address,
             @RequestParam(defaultValue = "") String cccd,
-            @Nullable
-            @RequestParam(defaultValue = "asc") String sortType,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(defaultValue = "asc") String sortType
     ) {
-        return new ResponseEntity<>(customerService.filterCustomer(name, address, phone, cccd, sortType, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(customerService.filterCustomer(name, address, phone, cccd, page, size,sortType), HttpStatus.OK);
     }
 
 

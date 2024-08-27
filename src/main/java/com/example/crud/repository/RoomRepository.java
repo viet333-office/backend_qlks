@@ -1,6 +1,7 @@
 package com.example.crud.repository;
 
 import com.example.crud.entity.RoomEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Repository
 public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
@@ -18,8 +18,7 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
             + "AND (:value IS NULL OR c.value = :value) "
             + "AND (:status IS NULL OR :status = '' OR c.status = :status) "
             + "AND (:stay IS NULL OR :stay = '' OR c.stay = :stay)")
-
-    List<RoomEntity> filterRoom(
+    Page<RoomEntity> filterRoom(
             @RequestParam("name") String name,
             @RequestParam("room") String room,
             @RequestParam("value") Long value,
@@ -28,13 +27,6 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
             Pageable pageable
     );
 
-
-
-    @Query("SELECT r FROM RoomEntity r")
-    List<RoomEntity> findAll();
-//    @Query("select new com.example.crud.dto.response.RoomResponse(r.name) FROM RoomEntity r")
-//    List<RoomResponse> findByName();
-//    lấy ra 1 trường thì cần phải viết theo kiểu HQL
 
     boolean existsById(Long id);
 }

@@ -3,6 +3,7 @@ package com.example.crud.service.impl;
 import com.example.crud.dto.request.CustomerRequest;
 import com.example.crud.dto.response.CustomerResponse;
 import com.example.crud.dto.response.ResponseApi;
+import com.example.crud.dto.response.ResponseFilter;
 import com.example.crud.entity.BookingEntity;
 import com.example.crud.entity.CustomerEntity;
 import com.example.crud.mapping.CustomerMapping;
@@ -11,6 +12,7 @@ import com.example.crud.repository.CustomerRepository;
 import com.example.crud.service.serviceInterface.CustomerService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,9 +28,11 @@ public class CustomerImpl implements CustomerService {
     public CustomerRepository customerRepository;
     @Autowired
     public BookingRepository bookingRepository;
+
     private boolean isNumeric(String str) {
-        return  str.matches("\\d+");
+        return str.matches("\\d+");
     }
+
     @Override
     public ResponseApi getCustomer() {
         try {
@@ -105,19 +109,19 @@ public class CustomerImpl implements CustomerService {
     }
 
     @Override
-    public ResponseApi filterCustomer(String name ,String address, String phone,String cccd, String sortType, int page, int size) {
+    public ResponseFilter filterCustomer(String name, String address, String phone, String cccd, int page, int size, String sortType) {
         try {
-
-            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.valueOf(sortType.toUpperCase()), "name"));
-            List<CustomerEntity> customerEntityList = customerRepository.searchByNameOrAddressOrCccdOrPhone(name, phone, address,cccd, pageable);
-            List<CustomerResponse> customerResponseList = customerEntityList
+            Pageable pageable = PageRequest
+                    .of(page, size, Sort.by(Sort.Direction.valueOf(sortType.toUpperCase()), "name"));
+            Page<CustomerEntity> customerPage = customerRepository
+                    .searchByNameOrAddressOrCccdOrPhone(name, phone, address, cccd, pageable);
+            List<CustomerResponse> customerResponseList = customerPage.getContent()
                     .stream()
                     .map(CustomerMapping::mapEntityToResponse)
                     .collect(Collectors.toList());
-
-            return new ResponseApi(true, "tìm kiếm dữ liệu", customerResponseList);
+            return new ResponseFilter(true, "Tìm kiếm dữ liệu", customerResponseList, customerPage.getTotalPages(), customerPage.getTotalElements());
         } catch (Exception e) {
-            return new ResponseApi(false, e.getMessage(), null);
+            return new ResponseFilter(false, e.getMessage(), null, 0, 0);
         }
     }
 

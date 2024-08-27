@@ -1,8 +1,6 @@
 package com.example.crud.controller;
 
 import com.example.crud.dto.request.BookingRequest;
-import com.example.crud.entity.CustomerEntity;
-import com.example.crud.entity.RoomEntity;
 import com.example.crud.service.serviceInterface.BookingService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -53,8 +51,7 @@ public class BookingController {
             @RequestParam Long id_customer,
             @RequestParam Long id_room,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
-            @Nullable
+            @RequestParam(defaultValue = "4") int size,
             @RequestParam String arrange
     ) {
         return new ResponseEntity<>(bookingService

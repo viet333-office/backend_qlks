@@ -2,6 +2,7 @@ package com.example.crud.service.serviceInterface;
 
 import com.example.crud.dto.request.RoomRequest;
 import com.example.crud.dto.response.ResponseApi;
+import com.example.crud.dto.response.ResponseFilter;
 
 
 public interface RoomService {
@@ -14,5 +15,5 @@ public interface RoomService {
     ResponseApi deleteRoom(Long id);
 
 
-    ResponseApi filterRoom(String name, String room,Long value ,String status,String stay,int page, int size, String arrange);
+    ResponseFilter filterRoom(String name, String room, Long value , String status, String stay, int page, int size, String arrange);
 }

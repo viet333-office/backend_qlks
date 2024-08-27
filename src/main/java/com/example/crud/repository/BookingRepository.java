@@ -1,15 +1,12 @@
 package com.example.crud.repository;
 
 import com.example.crud.entity.BookingEntity;
-import com.example.crud.entity.CustomerEntity;
-import com.example.crud.entity.RoomEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,7 +40,8 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
             + "(:end IS NULL OR b.end <= :end) AND "
             + "(:id_customer IS NULL OR b.id_customer = :id_customer) AND "
             + "(:id_room IS NULL OR b.id_room = :id_room)")
-    List<BookingEntity> filter(
+
+    Page<BookingEntity> filter(
             @RequestParam("start")  Date start,
             @RequestParam("end")  Date end,
             @RequestParam("id_customer") Long id_customer,

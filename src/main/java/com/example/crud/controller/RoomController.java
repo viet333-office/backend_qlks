@@ -51,9 +51,8 @@ public class RoomController {
             @Nullable
             @RequestParam String stay,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
-            @Nullable
-            @RequestParam String arrange
+            @RequestParam(defaultValue = "4") int size,
+            @Nullable            @RequestParam String arrange
 
     ) {
         return new ResponseEntity<>(roomService.filterRoom(name,room, value, status,stay,page, size, arrange),HttpStatus.OK);

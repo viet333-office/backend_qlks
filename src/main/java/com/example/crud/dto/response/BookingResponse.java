@@ -1,9 +1,5 @@
 package com.example.crud.dto.response;
 
-import com.example.crud.entity.CustomerEntity;
-import com.example.crud.entity.RoomEntity;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
