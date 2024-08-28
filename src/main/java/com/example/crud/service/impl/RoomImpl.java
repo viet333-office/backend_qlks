@@ -30,29 +30,39 @@ public class RoomImpl implements RoomService {
     private RoomRepository roomRepository;
     @Autowired
     private BookingRepository bookingRepository;
-    private boolean isNumeric(String str) {
-        return str.matches("\\d+");
-    }
-    @Override
-    public ResponseApi getRoom() {
-        try {
-            return new ResponseApi(true, "done", roomRepository.findAll());
-        } catch (Exception e) {
-            return new ResponseApi(false, "bug ne", null);
-        }
 
-    }
+
 
     @Override
     public ResponseApi postRoom(RoomRequest roomRequest) {
         try {
-            if (isNumeric(roomRequest.getName())) {
-                return new ResponseApi(false, "name room chỉ chữ", null);
+            if (roomRequest.getName().length() < 3 || roomRequest.getName().length() > 20) {
+                return new ResponseApi(false, "Tên phải có độ dài từ 3 đến 20 ký tự", null);
             }
-            if (!isNumeric(roomRequest.getRoom())) {
-                return new ResponseApi(false, "số room chỉ chứa số", null);
+            if (roomRequest.getName().matches(".*\\d.*")) {
+                return new ResponseApi(false, "Tên phòng không được chứa số", null);
+            }
+            if (!roomRequest.getName().matches("^[a-zA-Z\\s]+$")) {
+                return new ResponseApi(false, "Tên phòng chỉ chứa chữ cái và khoảng trắng", null);
             }
 
+            if (!roomRequest.getRoom().matches("^\\d{3,20}$")) {
+                return new ResponseApi(false, "Số phòng chỉ chứa số, độ dài từ 3 đến 20 ký tự", null);
+            }
+
+            if (roomRequest.getValue() < 1 || roomRequest.getValue() > 9999999999L) {
+                return new ResponseApi(false, "Giá trị phòng phải nằm trong khoảng từ 1 đến 9999999999", null);
+            }
+
+            if (roomRequest.getStay().length() < 1 || roomRequest.getStay().length() > 100) {
+                return new ResponseApi(false, "Thời gian lưu trú phải có độ dài từ 1 đến 100 ký tự", null);
+            }
+            if (!roomRequest.getStay().matches("^\\d+$")) {
+                return new ResponseApi(false, "Thời gian lưu trú phải là số", null);
+            }
+            if (roomRepository.existsAllByRoom(roomRequest.getRoom())) {
+                return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
+            }
             RoomEntity roomEntity = RoomMapping.mapRequestToEntity(roomRequest);
             roomRepository.save(roomEntity);
             return new ResponseApi(true, "done", roomEntity);
@@ -66,6 +76,33 @@ public class RoomImpl implements RoomService {
         try {
 
             RoomEntity roomEntity = roomRepository.findById(id).get();
+            if (roomRequest.getName().length() < 3 || roomRequest.getName().length() > 20) {
+                return new ResponseApi(false, "Tên phải có độ dài từ 3 đến 20 ký tự", null);
+            }
+            if (roomRequest.getName().matches(".*\\d.*")) {
+                return new ResponseApi(false, "Tên phòng không được chứa số", null);
+            }
+            if (!roomRequest.getName().matches("^[a-zA-Z\\s]+$")) {
+                return new ResponseApi(false, "Tên phòng chỉ chứa chữ cái và khoảng trắng", null);
+            }
+
+            if (!roomRequest.getRoom().matches("^\\d{3,20}$")) {
+                return new ResponseApi(false, "Số phòng chỉ chứa số, độ dài từ 3 đến 20 ký tự", null);
+            }
+
+            if (roomRequest.getValue() < 1 || roomRequest.getValue() > 9999999999L) {
+                return new ResponseApi(false, "Giá trị phòng phải nằm trong khoảng từ 1 đến 9999999999", null);
+            }
+
+            if (roomRequest.getStay().length() < 1 || roomRequest.getStay().length() > 100) {
+                return new ResponseApi(false, "Thời gian lưu trú phải có độ dài từ 1 đến 100 ký tự", null);
+            }
+            if (!roomRequest.getStay().matches("^\\d+$")) {
+                return new ResponseApi(false, "Thời gian lưu trú phải là số", null);
+            }
+            if (roomRepository.existsAllByRoom(roomRequest.getRoom())) {
+                return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
+            }
             roomEntity.setName(roomRequest.getName());
             roomEntity.setRoom(roomRequest.getRoom());
             roomEntity.setValue(roomRequest.getValue());
@@ -102,11 +139,9 @@ public class RoomImpl implements RoomService {
             Pageable pageable = PageRequest
                     .of(page, size, Sort.by(Sort.Direction.valueOf(arrange.toUpperCase()), "room"));
             Page<RoomEntity> roomPage = roomRepository.searchByNameOrRoomOrValueOrStatusOrStay(name, room, value, status, stay, pageable);
-
             List<RoomResponse> roomResponseList = roomPage.getContent()
                     .stream()
                     .map(RoomMapping::mapEntityToResponse).collect(Collectors.toList());
-
             return new ResponseFilter(true, "done", roomResponseList, roomPage.getTotalPages(), roomPage.getTotalElements());
         } catch (Exception e) {
             return new ResponseFilter(false, "bug ne", null, 0, 0);

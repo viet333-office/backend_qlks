@@ -5,7 +5,6 @@ import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 
 public interface CustomerService {
-    ResponseApi getCustomer();
 
     ResponseApi postCustomer(CustomerRequest customerRequest);
 

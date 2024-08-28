@@ -17,8 +17,8 @@ public class RoomEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_room")
     Long id;
-    String room;
     String name;
+    String room;
     Long value;
     String status;
     String stay;
