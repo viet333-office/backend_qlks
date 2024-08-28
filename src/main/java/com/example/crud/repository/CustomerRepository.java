@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {

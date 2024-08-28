@@ -2,7 +2,6 @@ package com.example.crud.controller;
 
 import com.example.crud.dto.request.BookingRequest;
 import com.example.crud.service.serviceInterface.BookingService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

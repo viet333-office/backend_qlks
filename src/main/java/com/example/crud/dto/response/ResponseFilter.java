@@ -3,7 +3,6 @@ package com.example.crud.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
 
 @Getter
 @Setter

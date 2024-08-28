@@ -18,7 +18,6 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-//@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationController {
      final AuthenticationService service;
 

@@ -2,10 +2,8 @@ package com.example.crud.controller;
 
 import com.example.crud.dto.request.RoomRequest;
 import com.example.crud.service.serviceInterface.RoomService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,7 +31,6 @@ public class RoomController {
         return new ResponseEntity<>(roomService.deleteRoom(id), HttpStatus.OK);
     }
 
-
     @GetMapping("/filter")
     public ResponseEntity<?> filterRoom(
             @RequestParam(defaultValue = "") String name,
@@ -44,7 +41,6 @@ public class RoomController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "asc") String arrange
-
     ) {
         System.out.println(name);
         return new ResponseEntity<>(roomService.filterRoom(name,room, value, status,stay,page, size, arrange),HttpStatus.OK);
