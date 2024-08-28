@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class RoomResponse {
     Long id;
-    String room;
     String name;
+    String room;
     Long value;
     String status;
     String stay;

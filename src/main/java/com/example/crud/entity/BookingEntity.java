@@ -25,7 +25,7 @@ public class BookingEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "Asia/Ho_Chi_Minh")
     Date  end;
 
-    Long id_customer;
-    Long id_room;
+    String id_customer;
+    String id_room;
 
 }

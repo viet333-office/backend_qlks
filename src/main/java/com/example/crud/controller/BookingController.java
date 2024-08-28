@@ -43,13 +43,10 @@ public class BookingController {
     @GetMapping("/filter")
     public ResponseEntity<?> filterBooking(
 
-            @Nullable
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-            @Nullable
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
-
-            @RequestParam Long id_customer,
-            @RequestParam Long id_room,
+            @RequestParam String id_customer,
+            @RequestParam String id_room,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size,
             @RequestParam String arrange

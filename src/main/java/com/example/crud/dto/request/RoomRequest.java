@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomRequest {
-    @NotBlank(message = "Tên người dùng không được để trống")
+    @NotBlank(message = "Tên phòng không được để trống")
     @Size(min = 3, max = 50, message = "name phai co do dai tu 3 -> 50 ky tu")
     String name;
 

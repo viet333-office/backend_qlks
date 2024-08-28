@@ -15,5 +15,5 @@ public interface BookingService {
 
     ResponseApi deleteBooking(Long id);
 
-    ResponseFilter filterBooking(Date start , Date end, Long id_customer, Long id_room , String arrange, int page , int size);
+    ResponseFilter filterBooking(Date start , Date end, String id_customer, String id_room , String arrange, int page , int size);
 }

@@ -41,12 +41,12 @@ public class BookingImpl implements BookingService {
     @Override
     public ResponseApi postBooking(BookingRequest bookingRequest) {
         try {
-            boolean customerExists = customerRepository.existsById(bookingRequest.getId_customer());
+            boolean customerExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
             if (!customerExists) {
                 return new ResponseApi(false, "no id in customer", null);
             }
 
-            boolean roomExists = roomRepository.existsById(bookingRequest.getId_room());
+            boolean roomExists = roomRepository.existsByRoom(bookingRequest.getId_room());
             if (!roomExists) {
                 return new ResponseApi(false, "no id in room", null);
             }
@@ -64,12 +64,12 @@ public class BookingImpl implements BookingService {
         try {
             BookingEntity bookingEntity = bookingRepository.findById(id).get();
 
-            boolean customerExists = customerRepository.existsById(bookingRequest.getId_customer());
+            boolean customerExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
             if (!customerExists) {
                 return new ResponseApi(false, "no id in customer", null);
             }
             bookingEntity.setId_customer(bookingRequest.getId_customer());
-            boolean roomExists = roomRepository.existsById(bookingRequest.getId_room());
+            boolean roomExists = roomRepository.existsByRoom(bookingRequest.getId_room());
             if (!roomExists) {
                 return new ResponseApi(false, "no id in room", null);
             }
@@ -94,7 +94,7 @@ public class BookingImpl implements BookingService {
     }
 
     @Override
-    public ResponseFilter filterBooking(Date start, Date end, Long id_customer, Long id_room, String arrange, int page, int size) {
+    public ResponseFilter filterBooking(Date start, Date end, String id_customer, String id_room, String arrange, int page, int size) {
         try {
             Pageable pageable = PageRequest
                     .of(

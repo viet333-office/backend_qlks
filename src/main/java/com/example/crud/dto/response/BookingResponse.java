@@ -1,5 +1,6 @@
 package com.example.crud.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,8 +14,10 @@ import java.sql.Date;
 @Builder
 public class BookingResponse {
     Long id;
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     Date start;
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     Date end;
-    Long id_customer;
-    Long id_room;
+    String id_customer;
+    String id_room;
 }

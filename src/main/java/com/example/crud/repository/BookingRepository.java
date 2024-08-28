@@ -21,16 +21,16 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
 
     @Query("SELECT b FROM BookingEntity b WHERE b.id_customer = :idCustomer")
-    List<BookingEntity> findByCustomerId(@Param("idCustomer") Long idCustomer);
+    List<BookingEntity> findByCustomerId(@Param("idCustomer") String idCustomer);
 
     @Query("SELECT b FROM BookingEntity b WHERE b.id_room = :idRoom")
-    List<BookingEntity> findByRoomId(@Param("idRoom") Long idRoom);
+    List<BookingEntity> findByRoomId(@Param("idRoom") String idRoom);
     @Modifying
     @Query("DELETE FROM BookingEntity b WHERE b.id_customer = :idCustomer")
-    void deleteByCustomerId(@Param("idCustomer") Long idCustomer);
+    void deleteByCustomerId(@Param("idCustomer") String idCustomer);
     @Modifying
     @Query("DELETE FROM BookingEntity b WHERE b.id_room = :idRoom")
-    void deleteByRoomId(@Param("idRoom") Long idRoom);
+    void deleteByRoomId(@Param("idRoom") String idRoom);
 
 
 
@@ -38,14 +38,14 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     @Query("SELECT b FROM BookingEntity b WHERE "
             + "(:start IS NULL OR b.start >= :start) AND "
             + "(:end IS NULL OR b.end <= :end) AND "
-            + "(:id_customer IS NULL OR b.id_customer = :id_customer) AND "
-            + "(:id_room IS NULL OR b.id_room = :id_room)")
+            + "(:id_customer IS NULL OR :id_customer = '' OR b.id_customer = :id_customer) AND "
+            + "(:id_room IS NULL OR :id_room = '' OR b.id_room = :id_room)")
 
     Page<BookingEntity> filter(
             @RequestParam("start")  Date start,
             @RequestParam("end")  Date end,
-            @RequestParam("id_customer") Long id_customer,
-            @RequestParam("id_room") Long id_room,
+            @RequestParam("id_customer") String id_customer,
+            @RequestParam("id_room") String id_room,
             Pageable pageable
     );
 }

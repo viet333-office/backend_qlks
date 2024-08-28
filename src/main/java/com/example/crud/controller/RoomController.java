@@ -40,21 +40,17 @@ public class RoomController {
 
     @GetMapping("/filter")
     public ResponseEntity<?> filterRoom(
-            @Nullable
-            @RequestParam String name,
-            @Nullable
-            @RequestParam String room,
-            @Nullable
-            @RequestParam Long value,
-            @Nullable
-            @RequestParam String status,
-            @Nullable
-            @RequestParam String stay,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String room,
+            @RequestParam(defaultValue = "0") Long value,
+            @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String stay,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "4") int size,
-            @Nullable            @RequestParam String arrange
+            @RequestParam(defaultValue = "asc") String arrange
 
     ) {
+        System.out.println(name);
         return new ResponseEntity<>(roomService.filterRoom(name,room, value, status,stay,page, size, arrange),HttpStatus.OK);
     }
 

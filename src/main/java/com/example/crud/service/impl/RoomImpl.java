@@ -5,7 +5,9 @@ import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 import com.example.crud.dto.response.RoomResponse;
 import com.example.crud.entity.BookingEntity;
+import com.example.crud.entity.CustomerEntity;
 import com.example.crud.entity.RoomEntity;
+import com.example.crud.mapping.BookingMapping;
 import com.example.crud.mapping.RoomMapping;
 import com.example.crud.repository.BookingRepository;
 import com.example.crud.repository.RoomRepository;
@@ -80,10 +82,13 @@ public class RoomImpl implements RoomService {
     @Override
     public ResponseApi deleteRoom(Long id) {
         try {
-            List<BookingEntity> bookings = bookingRepository.findByRoomId(id);
+            RoomEntity roomEntity = roomRepository.findById(id).orElse(null);
+            String room = roomEntity.getRoom();
+            List<BookingEntity> bookings = bookingRepository.findByRoomId(room);
             if (!bookings.isEmpty()) {
-                bookingRepository.deleteByRoomId(id);
+                bookingRepository.deleteByRoomId(room);
             }
+
             roomRepository.deleteById(id);
             return new ResponseApi(true, "done", null);
         } catch (Exception e) {
@@ -95,15 +100,12 @@ public class RoomImpl implements RoomService {
     public ResponseFilter filterRoom(String name, String room, Long value, String status, String stay, int page, int size, String arrange) {
         try {
             Pageable pageable = PageRequest
-                    .of(
-                            page, size,
-                            Sort.by(Sort.Direction.valueOf(arrange.toUpperCase()), "room")
-                    );
-            Page<RoomEntity> roomPage = roomRepository.filterRoom(name, room, value, status, stay, pageable);
+                    .of(page, size, Sort.by(Sort.Direction.valueOf(arrange.toUpperCase()), "room"));
+            Page<RoomEntity> roomPage = roomRepository.searchByNameOrRoomOrValueOrStatusOrStay(name, room, value, status, stay, pageable);
+
             List<RoomResponse> roomResponseList = roomPage.getContent()
                     .stream()
-                    .map(RoomMapping::mapEntityToResponse)
-                    .collect(Collectors.toList());
+                    .map(RoomMapping::mapEntityToResponse).collect(Collectors.toList());
 
             return new ResponseFilter(true, "done", roomResponseList, roomPage.getTotalPages(), roomPage.getTotalElements());
         } catch (Exception e) {

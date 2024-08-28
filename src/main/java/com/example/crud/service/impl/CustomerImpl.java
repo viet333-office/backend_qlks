@@ -77,17 +77,13 @@ public class CustomerImpl implements CustomerService {
             if (customerRepository.existsAllByCccdAndIdNot(customerRequest.getPhone(), id)) {
                 return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
             }
-            List<BookingEntity> bookings = bookingRepository.findByCustomerId(id);
+
             customerEntity.setName(customerRequest.getName());
             customerEntity.setAddress(customerRequest.getAddress());
             customerEntity.setCccd(customerRequest.getCccd());
             customerEntity.setPhone(customerRequest.getPhone());
             customerRepository.save(customerEntity);
 
-            for (BookingEntity booking : bookings) {
-                booking.setId_customer(customerEntity.getId());
-            }
-            bookingRepository.saveAll(bookings);
             return new ResponseApi(true, "chỉnh sửa dữ liệu thành công", customerEntity);
         } catch (Exception e) {
             return new ResponseApi(false, e.getMessage(), null);
@@ -97,9 +93,11 @@ public class CustomerImpl implements CustomerService {
     @Override
     public ResponseApi deleteCustomer(Long id) {
         try {
-            List<BookingEntity> bookings = bookingRepository.findByCustomerId(id);
+            CustomerEntity customer = customerRepository.findById(id).orElse(null);
+            String cccd = customer.getCccd();
+            List<BookingEntity> bookings = bookingRepository.findByCustomerId(cccd);
             if (!bookings.isEmpty()) {
-                bookingRepository.deleteByCustomerId(id);
+                bookingRepository.deleteByCustomerId(cccd);
             }
             customerRepository.deleteById(id);
             return new ResponseApi(true, "xóa dữ liệu thành công", null);
