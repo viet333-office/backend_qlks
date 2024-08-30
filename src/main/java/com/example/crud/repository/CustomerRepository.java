@@ -30,9 +30,7 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
 
 
     boolean existsAllByCccd( String cccd );
-
-    @Query("SELECT COUNT(c) > 0 FROM CustomerEntity c WHERE c.cccd = :cccd AND c.id <> :id")
-    boolean existsAllByCccdAndIdNot(@Param("cccd") String cccd, @Param("id") Long id);
+    boolean existsByCccdAndIdNot(String cccd, Long id);
 
     boolean existsByCccd( String cccd);
 }

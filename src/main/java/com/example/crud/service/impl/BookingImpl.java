@@ -29,14 +29,6 @@ public class BookingImpl implements BookingService {
     @Autowired
     private RoomRepository roomRepository;
 
-    @Override
-    public ResponseApi getBooking() {
-        try {
-            return new ResponseApi(true, "done", bookingRepository.findAll());
-        } catch (Exception e) {
-            return new ResponseApi(false, e.getMessage(), null);
-        }
-    }
 
     @Override
     public ResponseApi postBooking(BookingRequest bookingRequest) {
@@ -101,7 +93,8 @@ public class BookingImpl implements BookingService {
                             page, size,
                             Sort.by(Sort.Direction.valueOf(arrange.toUpperCase()), "start")
                     );
-            Page<BookingEntity> bookingPage = bookingRepository.filter(start, end, id_customer, id_room, pageable);
+
+            Page<BookingEntity> bookingPage = bookingRepository.searchByStartOrEndOrId_customerOrId_room(start, end, id_customer, id_room, pageable);
             List<BookingResponse> bookingResponseList = bookingPage
                     .getContent()
                     .stream().map(BookingMapping::mapEntityToResponse)

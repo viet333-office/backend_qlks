@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Date;
@@ -35,18 +36,37 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
 
 
-    @Query("SELECT b FROM BookingEntity b WHERE "
-            + "(:start IS NULL OR b.start >= :start) AND "
-            + "(:end IS NULL OR b.end <= :end) AND "
-            + "(:id_customer IS NULL OR :id_customer = '' OR b.id_customer = :id_customer) AND "
-            + "(:id_room IS NULL OR :id_room = '' OR b.id_room = :id_room)")
 
-    Page<BookingEntity> filter(
+    @Query("SELECT b FROM BookingEntity b WHERE "
+            + "(:start IS NULL  OR b.start >= :start) "
+            + "AND (:end IS NULL  OR b.end <= :end) "
+            + "AND (:id_customer IS NULL OR :id_customer = '' OR LOWER(b.id_customer) LIKE LOWER(CONCAT('%', :id_customer, '%'))) "
+            + "AND (:id_room IS NULL OR :id_room = '' OR LOWER(b.id_room) LIKE LOWER(CONCAT('%', :id_room, '%')))")
+
+
+//            ("SELECT b FROM BookingEntity b WHERE "
+//            + "(:start IS NULL OR FUNCTION('DATE_FORMAT', b.start, '%Y-%m-%d') LIKE CONCAT('%', :start, '%')) "
+//            + "AND (:end IS NULL OR FUNCTION('DATE_FORMAT', b.end, '%Y-%m-%d') LIKE CONCAT('%', :end, '%')) "
+//            + "AND (:id_customer IS NULL OR :id_customer = '' OR b.id_customer LIKE CONCAT('%', :id_customer, '%')) "
+//            + "AND (:id_room  IS NULL OR :id_room  = '' OR b.id_room LIKE (CONCAT('%', :id_room , '%')))"
+//    )
+    Page<BookingEntity> searchByStartOrEndOrId_customerOrId_room(
             @RequestParam("start")  Date start,
             @RequestParam("end")  Date end,
             @RequestParam("id_customer") String id_customer,
             @RequestParam("id_room") String id_room,
             Pageable pageable
     );
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE BookingEntity b SET b.id_customer = :newCccd WHERE b.id_customer = :oldCccd")
+    void updateBookingsCccd(@Param("oldCccd") String oldCccd, @Param("newCccd") String newCccd );
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE BookingEntity b SET b.id_room = :newRoom WHERE b.id_room = :oldRoom")
+    void updateBookingsRoom(@Param("oldRoom") String oldRoom, @Param("newRoom") String newRoom );
+
 }
 

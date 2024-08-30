@@ -106,10 +106,11 @@ public class CustomerImpl implements CustomerService {
             if (customerRequest.getCccd() == null || !customerRequest.getCccd().matches("^\\d{12}$")) {
                 return new ResponseApi(false, "CCCD phải là 12 chữ số và chỉ chứa số", null);
             }
-
-            if (customerRepository.existsAllByCccd(customerRequest.getCccd())) {
+            boolean cccdExists = customerRepository.existsByCccdAndIdNot(customerRequest.getCccd(), id);
+            if (cccdExists) {
                 return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
             }
+            String oldCccd = customerEntity.getCccd();
 
             customerEntity.setName(customerRequest.getName());
             customerEntity.setAddress(customerRequest.getAddress());
@@ -117,6 +118,9 @@ public class CustomerImpl implements CustomerService {
             customerEntity.setPhone(customerRequest.getPhone());
             customerRepository.save(customerEntity);
 
+            if (!oldCccd.equals(customerRequest.getCccd())) {
+                bookingRepository.updateBookingsCccd(oldCccd, customerRequest.getCccd());
+            }
             return new ResponseApi(true, "chỉnh sửa dữ liệu thành công", customerEntity);
         } catch (Exception e) {
             return new ResponseApi(false, e.getMessage(), null);

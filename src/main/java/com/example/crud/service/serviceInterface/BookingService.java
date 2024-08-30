@@ -7,7 +7,6 @@ import com.example.crud.dto.response.ResponseFilter;
 import java.sql.Date;
 
 public interface BookingService {
-    ResponseApi getBooking();
 
     ResponseApi postBooking(BookingRequest bookingRequest);
 

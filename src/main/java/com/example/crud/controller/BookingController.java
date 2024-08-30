@@ -1,6 +1,7 @@
 package com.example.crud.controller;
 
 import com.example.crud.dto.request.BookingRequest;
+import com.example.crud.service.impl.BookingImpl;
 import com.example.crud.service.serviceInterface.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,6 @@ public class BookingController {
     @Autowired
     public BookingService bookingService;
 
-    @GetMapping("/getBooking")
-    public ResponseEntity<?> getBooking() {
-        return new ResponseEntity<>(bookingService.getBooking(), HttpStatus.OK);
-    }
 
     @PostMapping("/postBooking")
     public ResponseEntity<?> postBooking(@Valid @RequestBody BookingRequest bookingRequest) {
@@ -42,8 +39,8 @@ public class BookingController {
     @GetMapping("/filter")
     public ResponseEntity<?> filterBooking(
 
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
             @RequestParam String id_customer,
             @RequestParam String id_room,
             @RequestParam(defaultValue = "0") int page,

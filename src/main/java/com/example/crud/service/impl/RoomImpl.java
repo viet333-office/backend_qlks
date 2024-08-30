@@ -40,9 +40,6 @@ public class RoomImpl implements RoomService {
             if (roomRequest.getName().matches(".*\\d.*")) {
                 return new ResponseApi(false, "Tên phòng không được chứa số", null);
             }
-            if (!roomRequest.getName().matches("^[a-zA-Z\\s]+$")) {
-                return new ResponseApi(false, "Tên phòng chỉ chứa chữ cái và khoảng trắng", null);
-            }
 
             if (!roomRequest.getRoom().matches("^\\d{3,20}$")) {
                 return new ResponseApi(false, "Số phòng chỉ chứa số, độ dài từ 3 đến 20 ký tự", null);
@@ -98,9 +95,13 @@ public class RoomImpl implements RoomService {
             if (!roomRequest.getStay().matches("^\\d+$")) {
                 return new ResponseApi(false, "Thời gian lưu trú phải là số", null);
             }
-            if (roomRepository.existsAllByRoom(roomRequest.getRoom())) {
+            boolean roomExists = roomRepository.existsByRoomAndIdNot(roomRequest.getRoom(), id);
+            if (roomExists) {
                 return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
             }
+            String oldRoom = roomEntity.getRoom();
+            System.out.println(oldRoom + "oldRoom");
+
             roomEntity.setName(roomRequest.getName());
             roomEntity.setRoom(roomRequest.getRoom());
             roomEntity.setValue(roomRequest.getValue());
@@ -108,6 +109,11 @@ public class RoomImpl implements RoomService {
             roomEntity.setStay(roomRequest.getStay());
 
             roomRepository.save(roomEntity);
+            if (!oldRoom.equals(roomRequest.getRoom())) {
+                System.out.println(oldRoom + "oldRoom");
+                System.out.println(roomRequest.getRoom() + "roomRequest.getRoom()");
+                bookingRepository.updateBookingsRoom(oldRoom, roomRequest.getRoom());
+            }
             return new ResponseApi(true, "done", null);
         } catch (Exception e) {
             return new ResponseApi(false, "bug ne", null);
