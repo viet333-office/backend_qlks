@@ -33,14 +33,30 @@ public class BookingImpl implements BookingService {
     @Override
     public ResponseApi postBooking(BookingRequest bookingRequest) {
         try {
+            if (bookingRequest.getId_customer() == null || !bookingRequest.getId_customer().matches("\\d{12}")) {
+                return new ResponseApi(false, "Cần cung cấp đúng cccd của khách hàng (12 chữ số)", null);
+            }
+
+            if (bookingRequest.getId_room() == null || !bookingRequest.getId_room().matches("\\d{3,20}")) {
+                return new ResponseApi(false, "Cần cung cấp đúng mã phòng (từ 3 đến 20 chữ số)", null);
+            }
+
             boolean customerExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
             if (!customerExists) {
-                return new ResponseApi(false, "no id in customer", null);
+                return new ResponseApi(false, "cần cung cấp đúng cccd của khách hàng", null);
             }
 
             boolean roomExists = roomRepository.existsByRoom(bookingRequest.getId_room());
             if (!roomExists) {
-                return new ResponseApi(false, "no id in room", null);
+                return new ResponseApi(false, "cần cung cấp đúng mã phòng", null);
+            }
+
+            if (bookingRequest.getStart() == null || bookingRequest.getEnd() == null) {
+                return new ResponseApi(false, "Cần cung cấp cả ngày bắt đầu và ngày kết thúc", null);
+            }
+
+            if (bookingRequest.getEnd().before(bookingRequest.getStart())) {
+                return new ResponseApi(false, "Ngày kết thúc phải lớn hơn ngày bắt đầu", null);
             }
 
             BookingEntity bookingEntity = BookingMapping.mapRequestToEntity(bookingRequest);
@@ -69,7 +85,7 @@ public class BookingImpl implements BookingService {
             bookingEntity.setStart(bookingRequest.getStart());
             bookingEntity.setEnd(bookingRequest.getEnd());
             bookingRepository.save(bookingEntity);
-            return new ResponseApi(true, "done", null);
+            return new ResponseApi(true, "done", bookingEntity);
         } catch (Exception e) {
             return new ResponseApi(false, e.getMessage(), null);
         }
@@ -99,9 +115,9 @@ public class BookingImpl implements BookingService {
                     .getContent()
                     .stream().map(BookingMapping::mapEntityToResponse)
                     .collect(Collectors.toList());
-            return new ResponseFilter(true, "done", bookingResponseList,bookingPage.getTotalPages(),bookingPage.getTotalElements());
+            return new ResponseFilter(true, "done", bookingResponseList, bookingPage.getTotalPages(), bookingPage.getTotalElements());
         } catch (Exception e) {
-            return new ResponseFilter(false, "bug ne", null,0,0);
+            return new ResponseFilter(false, "bug ne", null, 0, 0);
         }
     }
 

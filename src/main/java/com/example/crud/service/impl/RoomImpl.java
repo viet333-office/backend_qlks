@@ -100,7 +100,6 @@ public class RoomImpl implements RoomService {
                 return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
             }
             String oldRoom = roomEntity.getRoom();
-            System.out.println(oldRoom + "oldRoom");
 
             roomEntity.setName(roomRequest.getName());
             roomEntity.setRoom(roomRequest.getRoom());
@@ -110,11 +109,9 @@ public class RoomImpl implements RoomService {
 
             roomRepository.save(roomEntity);
             if (!oldRoom.equals(roomRequest.getRoom())) {
-                System.out.println(oldRoom + "oldRoom");
-                System.out.println(roomRequest.getRoom() + "roomRequest.getRoom()");
                 bookingRepository.updateBookingsRoom(oldRoom, roomRequest.getRoom());
             }
-            return new ResponseApi(true, "done", null);
+            return new ResponseApi(true, "done", roomEntity);
         } catch (Exception e) {
             return new ResponseApi(false, "bug ne", null);
         }

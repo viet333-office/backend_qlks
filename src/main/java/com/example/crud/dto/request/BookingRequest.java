@@ -13,10 +13,10 @@ import java.sql.Date;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingRequest {
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Ho_Chi_Minh")
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     Date start;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Ho_Chi_Minh")
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     Date end;
 
     String id_customer;
