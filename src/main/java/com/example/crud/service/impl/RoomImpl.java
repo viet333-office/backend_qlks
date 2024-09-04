@@ -120,13 +120,6 @@ public class RoomImpl implements RoomService {
     @Override
     public ResponseApi deleteRoom(Long id) {
         try {
-            RoomEntity roomEntity = roomRepository.findById(id).orElse(null);
-            String room = roomEntity.getRoom();
-            List<BookingEntity> bookings = bookingRepository.findByRoomId(room);
-            if (!bookings.isEmpty()) {
-                bookingRepository.deleteByRoomId(room);
-            }
-
             roomRepository.deleteById(id);
             return new ResponseApi(true, "done", null);
         } catch (Exception e) {

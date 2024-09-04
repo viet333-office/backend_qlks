@@ -1,6 +1,7 @@
 package com.example.crud.service.impl;
 
 import com.example.crud.dto.request.BookingRequest;
+import com.example.crud.dto.request.FilterBooking;
 import com.example.crud.dto.response.*;
 import com.example.crud.entity.BookingEntity;
 import com.example.crud.mapping.BookingMapping;
@@ -37,12 +38,21 @@ public class BookingImpl implements BookingService {
                 return new ResponseApi(false, "Cần cung cấp đúng cccd của khách hàng (12 chữ số)", null);
             }
 
+            if (bookingRequest.getPhone_booking() == null || !bookingRequest.getPhone_booking().matches("\\d{10}")) {
+                return new ResponseApi(false, "Cần cung cấp đúng phone của khách hàng (10 số)", null);
+            }
+
             if (bookingRequest.getId_room() == null || !bookingRequest.getId_room().matches("\\d{3,20}")) {
                 return new ResponseApi(false, "Cần cung cấp đúng mã phòng (từ 3 đến 20 chữ số)", null);
             }
 
-            boolean customerExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
-            if (!customerExists) {
+            boolean customerCccdExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
+            if (!customerCccdExists) {
+                return new ResponseApi(false, "cần cung cấp đúng cccd của khách hàng", null);
+            }
+
+            boolean customerPhoneExists = customerRepository.existsByPhone(bookingRequest.getPhone_booking());
+            if (!customerPhoneExists) {
                 return new ResponseApi(false, "cần cung cấp đúng cccd của khách hàng", null);
             }
 
@@ -72,15 +82,23 @@ public class BookingImpl implements BookingService {
         try {
             BookingEntity bookingEntity = bookingRepository.findById(id).get();
 
-            boolean customerExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
-            if (!customerExists) {
-                return new ResponseApi(false, "no id in customer", null);
+            boolean customerCccdExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
+            if (!customerCccdExists) {
+                return new ResponseApi(false, "cần điền đúng cccd của customer", null);
             }
             bookingEntity.setId_customer(bookingRequest.getId_customer());
+
+            boolean customerPhoneExists = customerRepository.existsByPhone(bookingRequest.getPhone_booking());
+            if (!customerPhoneExists) {
+                return new ResponseApi(false, "cần điền đúng phone của customer", null);
+            }
+            bookingEntity.setPhone_booking(bookingRequest.getPhone_booking());
+
             boolean roomExists = roomRepository.existsByRoom(bookingRequest.getId_room());
             if (!roomExists) {
-                return new ResponseApi(false, "no id in room", null);
+                return new ResponseApi(false, "cần điền đúng mã phòng", null);
             }
+
             bookingEntity.setId_room(bookingRequest.getId_room());
             bookingEntity.setStart(bookingRequest.getStart());
             bookingEntity.setEnd(bookingRequest.getEnd());
@@ -102,15 +120,21 @@ public class BookingImpl implements BookingService {
     }
 
     @Override
-    public ResponseFilter filterBooking(Date start, Date end, String id_customer, String id_room, String arrange, int page, int size) {
+    public ResponseFilter filterBooking(FilterBooking filterBooking) {
         try {
             Pageable pageable = PageRequest
                     .of(
-                            page, size,
-                            Sort.by(Sort.Direction.valueOf(arrange.toUpperCase()), "start")
+                            filterBooking.getPage(), filterBooking.getSize(),
+                            Sort.by(Sort.Direction.valueOf(filterBooking.getArrange().toUpperCase()), "start")
                     );
-
-            Page<BookingEntity> bookingPage = bookingRepository.searchByStartOrEndOrId_customerOrId_room(start, end, id_customer, id_room, pageable);
+            Page<BookingEntity> bookingPage = bookingRepository.searchByStartOrEndOrId_customerOrId_room(
+                    filterBooking.getStart(),
+                    filterBooking.getEnd(),
+                    filterBooking.getId_customer(),
+                    filterBooking.getPhone_booking(),
+                    filterBooking.getId_room(),
+                    pageable
+            );
             List<BookingResponse> bookingResponseList = bookingPage
                     .getContent()
                     .stream().map(BookingMapping::mapEntityToResponse)

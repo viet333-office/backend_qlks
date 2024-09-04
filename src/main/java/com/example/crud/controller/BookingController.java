@@ -1,6 +1,7 @@
 package com.example.crud.controller;
 
 import com.example.crud.dto.request.BookingRequest;
+import com.example.crud.dto.request.FilterBooking;
 import com.example.crud.service.impl.BookingImpl;
 import com.example.crud.service.serviceInterface.BookingService;
 import jakarta.validation.Valid;
@@ -36,19 +37,10 @@ public class BookingController {
         return new ResponseEntity<>(bookingService.deleteBooking(id), HttpStatus.OK);
     }
 
-    @GetMapping("/filter")
-    public ResponseEntity<?> filterBooking(
-
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end,
-            @RequestParam String id_customer,
-            @RequestParam String id_room,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size,
-            @RequestParam String arrange
-    ) {
+    @PostMapping("/filter")
+    public ResponseEntity<?> filterBooking(@RequestBody FilterBooking filterBooking) {
         return new ResponseEntity<>(bookingService
-                .filterBooking(start, end, id_customer, id_room, arrange, page, size), HttpStatus.OK);
+                .filterBooking(filterBooking), HttpStatus.OK);
     }
 
 }

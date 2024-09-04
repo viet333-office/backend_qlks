@@ -21,39 +21,17 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     List<BookingEntity> findAll();
 
 
-    @Query("SELECT b FROM BookingEntity b WHERE b.id_customer = :idCustomer")
-    List<BookingEntity> findByCustomerId(@Param("idCustomer") String idCustomer);
-
-    @Query("SELECT b FROM BookingEntity b WHERE b.id_room = :idRoom")
-    List<BookingEntity> findByRoomId(@Param("idRoom") String idRoom);
-    @Modifying
-    @Query("DELETE FROM BookingEntity b WHERE b.id_customer = :idCustomer")
-    void deleteByCustomerId(@Param("idCustomer") String idCustomer);
-    @Modifying
-    @Query("DELETE FROM BookingEntity b WHERE b.id_room = :idRoom")
-    void deleteByRoomId(@Param("idRoom") String idRoom);
-
-
-
-
-
     @Query("SELECT b FROM BookingEntity b WHERE "
             + "(:start IS NULL  OR b.start >= :start) "
             + "AND (:end IS NULL  OR b.end <= :end) "
             + "AND (:id_customer IS NULL OR :id_customer = '' OR LOWER(b.id_customer) LIKE LOWER(CONCAT('%', :id_customer, '%'))) "
+            + "AND (:phone_booking IS NULL OR :phone_booking = '' OR LOWER(b.phone_booking) LIKE LOWER(CONCAT('%', :phone_booking, '%')))"
             + "AND (:id_room IS NULL OR :id_room = '' OR LOWER(b.id_room) LIKE LOWER(CONCAT('%', :id_room, '%')))")
-
-
-//            ("SELECT b FROM BookingEntity b WHERE "
-//            + "(:start IS NULL OR FUNCTION('DATE_FORMAT', b.start, '%Y-%m-%d') LIKE CONCAT('%', :start, '%')) "
-//            + "AND (:end IS NULL OR FUNCTION('DATE_FORMAT', b.end, '%Y-%m-%d') LIKE CONCAT('%', :end, '%')) "
-//            + "AND (:id_customer IS NULL OR :id_customer = '' OR b.id_customer LIKE CONCAT('%', :id_customer, '%')) "
-//            + "AND (:id_room  IS NULL OR :id_room  = '' OR b.id_room LIKE (CONCAT('%', :id_room , '%')))"
-//    )
     Page<BookingEntity> searchByStartOrEndOrId_customerOrId_room(
-            @RequestParam("start")  Date start,
-            @RequestParam("end")  Date end,
+            @RequestParam("start") Date start,
+            @RequestParam("end") Date end,
             @RequestParam("id_customer") String id_customer,
+            @RequestParam("phone_booking") String phone_booking,
             @RequestParam("id_room") String id_room,
             Pageable pageable
     );
@@ -61,12 +39,12 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     @Transactional
     @Modifying
     @Query("UPDATE BookingEntity b SET b.id_customer = :newCccd WHERE b.id_customer = :oldCccd")
-    void updateBookingsCccd(@Param("oldCccd") String oldCccd, @Param("newCccd") String newCccd );
+    void updateBookingsCccd(@Param("oldCccd") String oldCccd, @Param("newCccd") String newCccd);
 
     @Transactional
     @Modifying
     @Query("UPDATE BookingEntity b SET b.id_room = :newRoom WHERE b.id_room = :oldRoom")
-    void updateBookingsRoom(@Param("oldRoom") String oldRoom, @Param("newRoom") String newRoom );
+    void updateBookingsRoom(@Param("oldRoom") String oldRoom, @Param("newRoom") String newRoom);
 
 }
 

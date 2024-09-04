@@ -1,6 +1,7 @@
 package com.example.crud.service.serviceInterface;
 
 import com.example.crud.dto.request.BookingRequest;
+import com.example.crud.dto.request.FilterBooking;
 import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 
@@ -14,5 +15,5 @@ public interface BookingService {
 
     ResponseApi deleteBooking(Long id);
 
-    ResponseFilter filterBooking(Date start , Date end, String id_customer, String id_room , String arrange, int page , int size);
+    ResponseFilter filterBooking(FilterBooking filterBooking);
 }

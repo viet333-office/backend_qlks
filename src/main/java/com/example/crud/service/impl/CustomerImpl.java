@@ -130,12 +130,6 @@ public class CustomerImpl implements CustomerService {
     @Override
     public ResponseApi deleteCustomer(Long id) {
         try {
-            CustomerEntity customer = customerRepository.findById(id).orElse(null);
-            String cccd = customer.getCccd();
-            List<BookingEntity> bookings = bookingRepository.findByCustomerId(cccd);
-            if (!bookings.isEmpty()) {
-                bookingRepository.deleteByCustomerId(cccd);
-            }
             customerRepository.deleteById(id);
             return new ResponseApi(true, "xóa dữ liệu thành công", null);
         } catch (Exception e) {

@@ -20,6 +20,6 @@ public class BookingRequest {
     Date end;
 
     String id_customer;
-
+    String phone_booking;
     String id_room;
 }
