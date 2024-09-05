@@ -110,16 +110,21 @@ public class CustomerImpl implements CustomerService {
             if (cccdExists) {
                 return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
             }
+            String oldPhone = customerEntity.getPhone();
             String oldCccd = customerEntity.getCccd();
 
             customerEntity.setName(customerRequest.getName());
+            customerEntity.setPhone(customerRequest.getPhone());
             customerEntity.setAddress(customerRequest.getAddress());
             customerEntity.setCccd(customerRequest.getCccd());
-            customerEntity.setPhone(customerRequest.getPhone());
+
             customerRepository.save(customerEntity);
 
             if (!oldCccd.equals(customerRequest.getCccd())) {
                 bookingRepository.updateBookingsCccd(oldCccd, customerRequest.getCccd());
+            }
+            if (!oldPhone.equals(customerRequest.getPhone())) {
+                bookingRepository.updateBookingsPhone(oldPhone, customerRequest.getPhone());
             }
             return new ResponseApi(true, "chỉnh sửa dữ liệu thành công", customerEntity);
         } catch (Exception e) {

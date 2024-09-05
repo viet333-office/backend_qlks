@@ -17,9 +17,6 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
-    @Query("SELECT b FROM BookingEntity b")
-    List<BookingEntity> findAll();
-
 
     @Query("SELECT b FROM BookingEntity b WHERE "
             + "(:start IS NULL  OR b.start >= :start) "
@@ -40,6 +37,11 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     @Modifying
     @Query("UPDATE BookingEntity b SET b.id_customer = :newCccd WHERE b.id_customer = :oldCccd")
     void updateBookingsCccd(@Param("oldCccd") String oldCccd, @Param("newCccd") String newCccd);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE BookingEntity b SET b.phone_booking = :newPhone WHERE b.phone_booking = :oldPhone AND b.start >= CURRENT_DATE")
+    void updateBookingsPhone(@Param("oldPhone") String oldPhone, @Param("newPhone") String newPhone);
 
     @Transactional
     @Modifying
