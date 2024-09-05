@@ -4,7 +4,6 @@ import com.example.crud.dto.request.RoomRequest;
 import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 import com.example.crud.dto.response.RoomResponse;
-import com.example.crud.entity.BookingEntity;
 import com.example.crud.entity.RoomEntity;
 import com.example.crud.mapping.RoomMapping;
 import com.example.crud.repository.BookingRepository;

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
-
 @Repository
 public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
     @Query("SELECT r FROM RoomEntity r WHERE "

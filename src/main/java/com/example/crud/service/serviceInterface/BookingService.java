@@ -5,7 +5,6 @@ import com.example.crud.dto.request.FilterBooking;
 import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 
-import java.sql.Date;
 
 public interface BookingService {
 

@@ -4,7 +4,6 @@ import com.example.crud.dto.request.CustomerRequest;
 import com.example.crud.dto.response.CustomerResponse;
 import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
-import com.example.crud.entity.BookingEntity;
 import com.example.crud.entity.CustomerEntity;
 import com.example.crud.mapping.CustomerMapping;
 import com.example.crud.repository.BookingRepository;

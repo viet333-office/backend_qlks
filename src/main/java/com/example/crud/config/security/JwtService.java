@@ -1,6 +1,6 @@
 package com.example.crud.config.security;
 
-import com.example.crud.entity.UserEntity;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
