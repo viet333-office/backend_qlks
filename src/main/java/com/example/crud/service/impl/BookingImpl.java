@@ -52,7 +52,7 @@ public class BookingImpl implements BookingService {
 
             boolean customerPhoneExists = customerRepository.existsByPhone(bookingRequest.getPhone_booking());
             if (!customerPhoneExists) {
-                return new ResponseApi(false, "cần cung cấp đúng cccd của khách hàng", null);
+                return new ResponseApi(false, "cần cung cấp đúng phone của khách hàng", null);
             }
 
             boolean roomExists = roomRepository.existsByRoom(bookingRequest.getId_room());
@@ -80,7 +80,9 @@ public class BookingImpl implements BookingService {
     public ResponseApi putBooking(Long id, BookingRequest bookingRequest) {
         try {
             BookingEntity bookingEntity = bookingRepository.findById(id).get();
-
+            if (bookingRequest.getEnd().before(bookingRequest.getStart())) {
+                return new ResponseApi(false, "Ngày kết thúc phải lớn hơn ngày bắt đầu", null);
+            }
             boolean customerCccdExists = customerRepository.existsByCccd(bookingRequest.getId_customer());
             if (!customerCccdExists) {
                 return new ResponseApi(false, "cần điền đúng cccd của customer", null);
