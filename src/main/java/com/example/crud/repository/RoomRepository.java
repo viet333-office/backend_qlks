@@ -23,9 +23,9 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
     Page<RoomEntity> searchByNameOrRoomOrValueOrStatusOrStay(
             @Param("name") String name,
             @Param("room") String room,
-            @RequestParam("value") Long value,
-            @RequestParam("status") String status,
-            @RequestParam("stay") String stay,
+            @Param("value") Long value,
+            @Param("status") String status,
+            @Param("stay") String stay,
             Pageable pageable
     );
 

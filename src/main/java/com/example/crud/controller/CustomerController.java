@@ -41,7 +41,7 @@ public class CustomerController {
             @RequestParam(defaultValue = "") String phone,
             @RequestParam(defaultValue = "") String address,
             @RequestParam(defaultValue = "") String cccd,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "asc") String sortType
     ) {

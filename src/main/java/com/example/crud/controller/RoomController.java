@@ -38,7 +38,7 @@ public class RoomController {
             @RequestParam(defaultValue = "0") Long value,
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String stay,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "asc") String arrange
     ) {

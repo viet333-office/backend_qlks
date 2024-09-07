@@ -70,14 +70,16 @@ public class RoomImpl implements RoomService {
         try {
 
             RoomEntity roomEntity = roomRepository.findById(id).get();
+            if (roomRequest.getName() == null || roomRequest.getName().trim().isEmpty()) {
+                return new ResponseApi(false, "Tên không được để trống hoặc chỉ chứa khoảng trắng", null);
+            }
+            
             if (roomRequest.getName().length() < 3 || roomRequest.getName().length() > 20) {
                 return new ResponseApi(false, "Tên phải có độ dài từ 3 đến 20 ký tự", null);
             }
-            if (roomRequest.getName().matches(".*\\d.*")) {
-                return new ResponseApi(false, "Tên phòng không được chứa số", null);
-            }
-            if (!roomRequest.getName().matches("^[a-zA-Z\\s]+$")) {
-                return new ResponseApi(false, "Tên phòng chỉ chứa chữ cái và khoảng trắng", null);
+
+            if (!roomRequest.getName().matches("^[^!@#$%^&*(),.?\":{}|<>]*$")) {
+                return new ResponseApi(false, "Tên không được chứa ký tự đặc biệt", null);
             }
 
             if (!roomRequest.getRoom().matches("^\\d{3,20}$")) {

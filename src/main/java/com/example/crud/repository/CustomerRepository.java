@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,10 +21,10 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
             + "AND (:cccd IS NULL OR :cccd = '' OR LOWER(c.cccd) LIKE LOWER(CONCAT('%', :cccd, '%')))"
     )
     Page<CustomerEntity> searchByNameOrAddressOrCccdOrPhone(
-            @RequestParam("name") String name,
-            @RequestParam("address") String phone,
-            @RequestParam("address") String address,
-            @RequestParam("cccd") String cccd,
+            @Param("name") String name,
+            @Param("phone") String phone,
+            @Param("address") String address,
+            @Param("cccd") String cccd,
             Pageable pageable
     );
 

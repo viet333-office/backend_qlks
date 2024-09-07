@@ -26,7 +26,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfiguration {
-    // tạo ra 1 mảng chứa các api permissAll
     static final String[] WHITE_LIST_URL = {
             "/api/v1/auth/**",
             "/api/booking/**",
@@ -45,7 +44,7 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) // tắt bảo mật CSRF
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URL) // cho phep truy cap permissALL
+                        req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
                                 .requestMatchers(GET,AMIN_AND_MANAGER )
                                 .hasAnyRole(ADMIN.name(),MANAGER.name())
