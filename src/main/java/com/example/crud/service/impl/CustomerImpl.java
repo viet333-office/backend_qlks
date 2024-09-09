@@ -45,8 +45,8 @@ public class CustomerImpl implements CustomerService {
                 return new ResponseApi(false, "Tên phải có độ dài từ 3 đến 20 ký tự", null);
             }
 
-            if (customerRequest.getPhone() == null || !customerRequest.getPhone().matches("^(03|09|02)\\d{8}$")) {
-                return new ResponseApi(false, "Số điện thoại phải bắt đầu bằng 03, 09, hoặc 02 và có đúng 10 chữ số", null);
+            if (customerRequest.getPhone() == null || !customerRequest.getPhone().matches("^(01|02|03|08|09)\\d{8}$")) {
+                return new ResponseApi(false, "Số điện thoại phải bắt đầu bằng 01, 02, 03, 08 hoặc 09 và có đúng 10 chữ số", null);
             }
             if (customerRequest.getAddress() == null || customerRequest.getAddress().trim().isEmpty()) {
                 return new ResponseApi(false, "Địa chỉ không được để trống hoặc chỉ chứa khoảng trắng", null);
@@ -62,7 +62,7 @@ public class CustomerImpl implements CustomerService {
             }
 
             if (customerRepository.existsAllByCccd(customerRequest.getCccd())) {
-                return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
+                return new ResponseApi(false, "Cccd đã tồn tại", null);
             }
 
             CustomerEntity customerEntity = CustomerMapping.mapRequestToEntity(customerRequest);
@@ -76,7 +76,13 @@ public class CustomerImpl implements CustomerService {
     @Override
     public ResponseApi putCustomer(Long id, CustomerRequest customerRequest) {
         try {
+
             CustomerEntity customerEntity = customerRepository.findById(id).orElse(null);
+            if (customerEntity == null) {
+                return new ResponseApi(false, "Khách hàng không tồn tại", null);
+            }
+
+            // Validate customer request
             if (customerRequest.getName() == null || customerRequest.getName().trim().isEmpty()) {
                 return new ResponseApi(false, "Tên không được để trống hoặc chỉ chứa khoảng trắng", null);
             }
@@ -89,9 +95,8 @@ public class CustomerImpl implements CustomerService {
             if (customerRequest.getName().length() < 3 || customerRequest.getName().length() > 20) {
                 return new ResponseApi(false, "Tên phải có độ dài từ 3 đến 20 ký tự", null);
             }
-
-            if (customerRequest.getPhone() == null || !customerRequest.getPhone().matches("^(03|09|02)\\d{8}$")) {
-                return new ResponseApi(false, "Số điện thoại phải bắt đầu bằng 03, 09, hoặc 02 và có đúng 10 chữ số", null);
+            if (customerRequest.getPhone() == null || !customerRequest.getPhone().matches("^(01|02|03|08|09)\\d{8}$")) {
+                return new ResponseApi(false, "Số điện thoại phải bắt đầu bằng 01, 02, 03, 08 hoặc 09 và có đúng 10 chữ số", null);
             }
             if (customerRequest.getAddress() == null || customerRequest.getAddress().trim().isEmpty()) {
                 return new ResponseApi(false, "Địa chỉ không được để trống hoặc chỉ chứa khoảng trắng", null);
@@ -107,8 +112,10 @@ public class CustomerImpl implements CustomerService {
             }
             boolean cccdExists = customerRepository.existsByCccdAndIdNot(customerRequest.getCccd(), id);
             if (cccdExists) {
-                return new ResponseApi(false, "Dữ liệu đã tồn tại", null);
+                return new ResponseApi(false, "Cccd đã tồn tại", null);
             }
+
+            // Update the customer entity
             String oldPhone = customerEntity.getPhone();
             String oldCccd = customerEntity.getCccd();
 
@@ -119,13 +126,15 @@ public class CustomerImpl implements CustomerService {
 
             customerRepository.save(customerEntity);
 
+            // Update bookings if necessary
             if (!oldCccd.equals(customerRequest.getCccd())) {
                 bookingRepository.updateBookingsCccd(oldCccd, customerRequest.getCccd());
             }
             if (!oldPhone.equals(customerRequest.getPhone())) {
                 bookingRepository.updateBookingsPhone(oldPhone, customerRequest.getPhone());
             }
-            return new ResponseApi(true, "chỉnh sửa dữ liệu thành công", customerEntity);
+
+            return new ResponseApi(true, "Chỉnh sửa dữ liệu thành công", customerEntity);
         } catch (Exception e) {
             return new ResponseApi(false, e.getMessage(), null);
         }
@@ -145,7 +154,7 @@ public class CustomerImpl implements CustomerService {
     public ResponseFilter filterCustomer(String name, String address, String phone, String cccd, int page, int size, String sortType) {
         try {
             Pageable pageable = PageRequest
-                    .of(page, size, Sort.by(Sort.Direction.valueOf(sortType.toUpperCase()), "name"));
+                    .of(page, size, Sort.by(Sort.Direction.valueOf(sortType.toUpperCase()), "id"));
             Page<CustomerEntity> customerPage = customerRepository
                     .searchByNameOrAddressOrCccdOrPhone(name, phone, address, cccd, pageable);
             List<CustomerResponse> customerResponseList = customerPage.getContent()

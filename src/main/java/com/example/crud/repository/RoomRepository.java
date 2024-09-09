@@ -34,7 +34,6 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
     boolean existsByRoom(String room);
     boolean existsAllByRoom( String room );
     boolean existsByRoomAndIdNot(String room, Long id);
-
 }
 
 
