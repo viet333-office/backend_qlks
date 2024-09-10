@@ -5,6 +5,7 @@ import com.example.crud.dto.response.CustomerResponse;
 import com.example.crud.dto.response.ResponseApi;
 import com.example.crud.dto.response.ResponseFilter;
 import com.example.crud.entity.CustomerEntity;
+import com.example.crud.entity.RoomEntity;
 import com.example.crud.mapping.CustomerMapping;
 import com.example.crud.repository.BookingRepository;
 import com.example.crud.repository.CustomerRepository;
@@ -143,6 +144,18 @@ public class CustomerImpl implements CustomerService {
     @Override
     public ResponseApi deleteCustomer(Long id) {
         try {
+            CustomerEntity customerEntity = customerRepository.findById(id).orElse(null);
+            String customerValue = "";
+
+            if (customerEntity == null) {
+                return new ResponseApi(false, "Khách hàng không tồn tại không tồn tại", null);
+            }
+
+            customerValue = customerEntity.getCccd();
+
+            if (bookingRepository.existsByIdCustomer(customerValue)) {
+                return new ResponseApi(false, "Không thể xóa vì khách hàng được sử dụng ", null);
+            }
             customerRepository.deleteById(id);
             return new ResponseApi(true, "xóa dữ liệu thành công", null);
         } catch (Exception e) {

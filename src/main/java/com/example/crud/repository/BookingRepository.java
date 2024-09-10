@@ -48,5 +48,10 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     @Query("UPDATE BookingEntity b SET b.id_room = :newRoom WHERE b.id_room = :oldRoom")
     void updateBookingsRoom(@Param("oldRoom") String oldRoom, @Param("newRoom") String newRoom);
 
+    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM BookingEntity b WHERE b.id_room = :idRoom")
+    Boolean existsByIdRoom(@Param("idRoom") String idRoom);
+
+    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM BookingEntity b WHERE b.id_customer = :idCustomer")
+    Boolean existsByIdCustomer(@Param("idCustomer") String idCustomer);
 }
 

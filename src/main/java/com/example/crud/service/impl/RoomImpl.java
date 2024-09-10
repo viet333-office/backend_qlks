@@ -147,11 +147,14 @@ public class RoomImpl implements RoomService {
         try {
             RoomEntity roomEntity = roomRepository.findById(id).orElse(null);
             String roomValue = "";
-            if (roomEntity != null) {
-                roomValue = roomEntity.getRoom();
+
+            if (roomEntity == null) {
+                return new ResponseApi(false, "Room không tồn tại", null);
             }
 
-            if (!roomValue.isEmpty()) {
+            roomValue = roomEntity.getRoom();
+
+            if (bookingRepository.existsByIdRoom(roomValue)) {
                 return new ResponseApi(false, "Không thể xóa vì room đang được sử dụng ", null);
             }
 
