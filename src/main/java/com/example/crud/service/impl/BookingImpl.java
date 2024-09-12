@@ -16,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,7 +30,6 @@ public class BookingImpl implements BookingService {
 
     @Autowired
     private RoomRepository roomRepository;
-
 
     @Override
     public ResponseApi postBooking(BookingRequest bookingRequest) {
@@ -67,8 +68,26 @@ public class BookingImpl implements BookingService {
             if (bookingRequest.getEnd().before(bookingRequest.getStart())) {
                 return new ResponseApi(false, "Ngày kết thúc phải lớn hơn ngày bắt đầu", null);
             }
+            long conflictingCount = bookingRepository.countConflictingBookings(
+                    bookingRequest.getId_room(),
+                    bookingRequest.getStart(),
+                    bookingRequest.getEnd()
+            );
+
+            if (conflictingCount > 0) {
+                return new ResponseApi(false, "Khoảng thời gian bạn chọn nằm trong khoảng thời gian đã được đặt trước, vui lòng chọn khoảng thời gian khác", null);
+            }
+
+            long diffInMillis = bookingRequest.getEnd().getTime() -  bookingRequest.getStart().getTime();
+            long numberOfDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+            Long getRoomValue = bookingRepository.findRoomValueByRoomId(bookingRequest.getId_room());
+            String getRoomStayString  = bookingRepository.findRoomStayByRoomId(bookingRequest.getId_room());
+            Long getRoomStay = Long.valueOf(getRoomStayString);
+
+            Long total = numberOfDays * (getRoomValue/getRoomStay);
 
             BookingEntity bookingEntity = BookingMapping.mapRequestToEntity(bookingRequest);
+            bookingEntity.setTotal(total);
             bookingRepository.save(bookingEntity);
             return new ResponseApi(true, "done", bookingEntity);
         } catch (Exception e) {
@@ -79,7 +98,7 @@ public class BookingImpl implements BookingService {
     @Override
     public ResponseApi putBooking(Long id, BookingRequest bookingRequest) {
         try {
-            BookingEntity bookingEntity = bookingRepository.findById(id).get();
+            BookingEntity bookingEntity = bookingRepository.findById(id).orElse(null);
             if (bookingRequest.getEnd().before(bookingRequest.getStart())) {
                 return new ResponseApi(false, "Ngày kết thúc phải lớn hơn ngày bắt đầu", null);
             }
@@ -100,9 +119,29 @@ public class BookingImpl implements BookingService {
                 return new ResponseApi(false, "cần điền đúng mã phòng", null);
             }
 
+            long conflictingCount = bookingRepository.countConflictingBookings(
+                    bookingRequest.getId_room(),
+                    bookingRequest.getStart(),
+                    bookingRequest.getEnd()
+            );
+
+            if (conflictingCount > 0) {
+                return new ResponseApi(false, "Khoảng thời gian bạn chọn nằm trong khoảng thời gian đã được đặt trước, vui lòng chọn khoảng thời gian khác", null);
+            }
+
+            long diffInMillis = bookingRequest.getEnd().getTime() -  bookingRequest.getStart().getTime();
+            long numberOfDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+            Long getRoomValue = bookingRepository.findRoomValueByRoomId(bookingRequest.getId_room());
+            String getRoomStayString  = bookingRepository.findRoomStayByRoomId(bookingRequest.getId_room());
+            Long getRoomStay = Long.valueOf(getRoomStayString);
+
+            Long total = numberOfDays * (getRoomValue/getRoomStay);
+
+
             bookingEntity.setId_room(bookingRequest.getId_room());
             bookingEntity.setStart(bookingRequest.getStart());
             bookingEntity.setEnd(bookingRequest.getEnd());
+            bookingEntity.setTotal(total);
             bookingRepository.save(bookingEntity);
             return new ResponseApi(true, "done", bookingEntity);
         } catch (Exception e) {
@@ -114,7 +153,7 @@ public class BookingImpl implements BookingService {
     public ResponseApi deleteBooking(Long id) {
         try {
             bookingRepository.deleteById(id);
-            return new ResponseApi(true, "done", null);
+            return new ResponseApi(true, "Xoá lịch đặt phòng thành công", null);
         } catch (Exception e) {
             return new ResponseApi(false, e.getMessage(), null);
         }
@@ -126,7 +165,7 @@ public class BookingImpl implements BookingService {
             Pageable pageable = PageRequest
                     .of(
                             filterBooking.getPage(), filterBooking.getSize(),
-                            Sort.by(Sort.Direction.valueOf(filterBooking.getArrange().toUpperCase()), "start")
+                            Sort.by(Sort.Direction.valueOf(filterBooking.getArrange().toUpperCase()), "id")
                     );
             Page<BookingEntity> bookingPage = bookingRepository.searchByStartOrEndOrId_customerOrId_room(
                     filterBooking.getStart(),
@@ -140,9 +179,9 @@ public class BookingImpl implements BookingService {
                     .getContent()
                     .stream().map(BookingMapping::mapEntityToResponse)
                     .collect(Collectors.toList());
-            return new ResponseFilter(true, "done", bookingResponseList, bookingPage.getTotalPages(), bookingPage.getTotalElements());
+            return new ResponseFilter(true, "tìm kiếm thành công", bookingResponseList, bookingPage.getTotalPages(), bookingPage.getTotalElements());
         } catch (Exception e) {
-            return new ResponseFilter(false, "bug ne", null, 0, 0);
+            return new ResponseFilter(false, e.getMessage(), null, 0, 0);
         }
     }
 

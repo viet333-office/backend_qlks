@@ -53,5 +53,33 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM BookingEntity b WHERE b.id_customer = :idCustomer")
     Boolean existsByIdCustomer(@Param("idCustomer") String idCustomer);
+
+
+
+    @Query("SELECT r.value FROM RoomEntity r WHERE r.room = :idRoom")
+    Long findRoomValueByRoomId(@Param("idRoom") String idRoom);
+
+    @Query("SELECT r.stay FROM RoomEntity r WHERE r.room = :idRoom")
+    String findRoomStayByRoomId(@Param("idRoom") String idRoom);
+
+
+
+    @Query("SELECT b FROM BookingEntity b WHERE b.id_room = :room AND b.start >= :currentDate")
+    List<BookingEntity> findBookingsByRoomAndStartDateAfter(@Param("room") String room, @Param("currentDate") Date currentDate);
+
+    @Modifying
+    @Query("UPDATE BookingEntity b SET b.total = ((DATEDIFF(b.end, b.start) * (:newPrice / :stay))) WHERE b.id_room = :room AND b.start >= :currentDate")
+    void updatePriceByRoomAndStartDateAfter(@Param("room") String room, @Param("newPrice") Long newPrice, @Param("stay") Long stay, @Param("currentDate") Date currentDate);
+
+
+    @Query("SELECT COUNT(b) FROM BookingEntity b WHERE b.id_room = :roomId AND " +
+            "(:startDate = b.start OR " +
+            ":endDate = b.end OR " +
+            "(b.start BETWEEN :startDate AND :endDate) OR " +
+            "(b.end BETWEEN :startDate AND :endDate) OR " +
+            "(:startDate >= b.start AND :endDate <= b.end))")
+    Long countConflictingBookings(@Param("roomId") String roomId,
+                                  @Param("startDate") Date startDate,
+                                  @Param("endDate") Date endDate);
 }
 

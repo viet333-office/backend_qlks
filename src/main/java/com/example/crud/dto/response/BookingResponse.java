@@ -21,4 +21,5 @@ public class BookingResponse {
     String id_customer;
     String phone_booking;
     String id_room;
+    Long total;
 }

@@ -28,12 +28,6 @@ public class BookingEntity {
     String id_customer;
     String phone_booking;
     String id_room;
-    public String getIdRoom() {
-        return id_room;
-    }
-
-    public void setIdRoom(String idRoom) {
-        this.id_room = idRoom;
-    }
+    Long total;
 }
 

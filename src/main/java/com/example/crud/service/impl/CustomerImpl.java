@@ -116,7 +116,6 @@ public class CustomerImpl implements CustomerService {
                 return new ResponseApi(false, "Cccd đã tồn tại", null);
             }
 
-            // Update the customer entity
             String oldPhone = customerEntity.getPhone();
             String oldCccd = customerEntity.getCccd();
 
@@ -127,7 +126,6 @@ public class CustomerImpl implements CustomerService {
 
             customerRepository.save(customerEntity);
 
-            // Update bookings if necessary
             if (!oldCccd.equals(customerRequest.getCccd())) {
                 bookingRepository.updateBookingsCccd(oldCccd, customerRequest.getCccd());
             }

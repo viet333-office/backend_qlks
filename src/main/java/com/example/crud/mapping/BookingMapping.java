@@ -28,6 +28,7 @@ public class BookingMapping {
         bookingResponse.setId_customer(bookingEntity.getId_customer());
         bookingResponse.setPhone_booking(bookingEntity.getPhone_booking());
         bookingResponse.setId_room(bookingEntity.getId_room());
+        bookingResponse.setTotal(bookingEntity.getTotal());
 
         return bookingResponse;
     }
