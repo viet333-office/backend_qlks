@@ -1,6 +1,6 @@
 package com.example.crud.config.security;
 
-import com.example.crud.repository.TokenRepository;
+import com.example.crud.module.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;

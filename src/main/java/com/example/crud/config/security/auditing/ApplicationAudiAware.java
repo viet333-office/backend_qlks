@@ -1,6 +1,6 @@
 package com.example.crud.config.security.auditing;
 
-import com.example.crud.entity.UserEntity;
+import com.example.crud.module.entity.UserEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

@@ -28,11 +28,10 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
     static final String[] WHITE_LIST_URL = {
             "/api/v1/auth/**",
-            "/api/booking/**",
-            "/api/customer/**",
-            "/api/room/**"
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     };
-    static final String[] AMIN_AND_MANAGER = {
+    static final String[] ADMIN_AND_MANAGER = {
             "/api/user/**"
     };
     final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -46,7 +45,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers(GET,AMIN_AND_MANAGER )
+                                .requestMatchers(ADMIN_AND_MANAGER )
                                 .hasAnyRole(ADMIN.name(),MANAGER.name())
                                 .anyRequest()
                                 .authenticated()

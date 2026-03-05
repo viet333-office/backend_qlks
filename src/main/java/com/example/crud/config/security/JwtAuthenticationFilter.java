@@ -1,6 +1,6 @@
 package com.example.crud.config.security;
 
-import com.example.crud.repository.TokenRepository;
+import com.example.crud.module.repository.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        if (request.getServletPath().contains("/api/v1/auth")){
 //            filterChain.doFilter(request,response);
 //            return;
-//        }
+        String path = request.getServletPath();
+
+        // ===== BỎ QUA SWAGGER =====
+        if (path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;

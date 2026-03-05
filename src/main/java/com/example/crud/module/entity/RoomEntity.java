@@ -1,0 +1,25 @@
+package com.example.crud.module.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+
+@Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "room")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class RoomEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_room")
+    Long id;
+    String name;
+    String room;
+    Long value;
+    String status;
+    String stay;
+}

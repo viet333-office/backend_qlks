@@ -1,7 +1,7 @@
 package com.example.crud.config.security;
 
 import com.example.crud.config.security.auditing.ApplicationAudiAware;
-import com.example.crud.repository.UserRepository;
+import com.example.crud.module.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
